@@ -1,0 +1,12 @@
+# Keep the supplied data pack local.
+/hackathon-problem-3-group-travel-matcher/
+/data/
+
+# Dependencies, local credentials and generated files.
+**/node_modules/
+**/.env
+**/.env.*
+!**/.env.example
+*.log
+**/dist/
+**/coverage/
