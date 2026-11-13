@@ -1,0 +1,10 @@
+var session = null;
+try { session = JSON.parse(sessionStorage.getItem("roam-session")); } catch {}
+var tags = [];
+var dashboard = {};
+var role = "seeker";
+var destination = "";
+var view = "plan";
+var signup = false;
+var searchVersion = 0;
+var journeyTab = "created";

@@ -1,14 +1,23 @@
 # Frontend
 
-The frontend is implemented in plain HTML, CSS and JavaScript. Static hotel images are available under
-`public/images/`, matching the `images/hotels/...` paths in the catalog.
+The frontend uses plain HTML, CSS, and browser JavaScript. It needs no separate install or build step.
 
-The Express API lives in `../backend/` and shared JSON data in
-`../hackathon-problem-3-group-travel-matcher/data/`.
-Fetch application data through the backend API.
+```text
+frontend/
+├── public/
+│   ├── images/                 # Public hotel imagery
+│   └── index.html              # App shell and asset entry points
+└── src/
+    ├── apis/                    # Backend API client
+    ├── assets/css/              # Design tokens, layout, components, responsive styles
+    ├── components/              # Shared UI such as the profile dialog
+    ├── context/                 # Session and application state
+    ├── hooks/                   # Shared async action behavior
+    ├── pages/                   # Auth, trip planner, journeys, hotel flow
+    ├── utils/                   # DOM, formatting, and form helpers
+    └── main.js                  # App startup and view rendering
+```
 
-Run `npm start` from `../backend`, then open http://localhost:5000.
-Express serves `public/` directly, so no separate frontend install or build is needed.
-Includes signup/login, destination autocomplete, creator/seeker forms, matching,
-saved searches, group requests and hotel comparison. The stay confirmation is a
-demo popup only: it does not create a real or persisted booking.
+Express serves `public/` at `/` and `src/` at `/src`. The API is in `../backend/`; the frontend fetches data through those API routes. Start the app from `backend/` with `npm run dev` or `npm start`, then open `http://localhost:5000`.
+
+Hotel recommendations, group finalization, and per-member cost splits use mock catalog data. Finalizing records the group's chosen room but does not make a real hotel reservation or payment.

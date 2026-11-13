@@ -1,6 +1,66 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Roam Together · Find your people</title><link rel="stylesheet" href="/styles.css"><script src="/app.js" defer></script></head>
-<body><header><a class="brand" href="/">roam<span>together↗</span></a><nav aria-label="Main navigation"><button data-view="plan">Explore trips</button><button data-view="dashboard">My journeys</button></nav><div id="account"></div></header>
-<main><section class="hero"><div><span class="eyebrow">GOOD PLACES. BETTER COMPANY.</span><h1>The world is better<br>with <em>your people.</em></h1><p>Find a shared interest. Plan a little adventure.<br>Make a journey worth sharing.</p><div class="hero-tags"><span>Japan & UAE</span><span>April 2027</span><span>Small groups, big memories</span></div></div><div class="hero-photo"><img src="/images/hotels/HOTEL-RYOKAN-1.jpg" alt="A peaceful Japanese ryokan"><div class="photo-caption">A slower kind of getaway<span>Find your next chapter ↗</span></div></div></section>
-<div id="notice" role="status" aria-live="polite"></div><section id="content" aria-live="polite"></section><footer>roam together · Go somewhere. Meet someone.<span>Made for curious travellers.</span></footer></main>
-<dialog id="modal"><button id="close-modal" class="close" aria-label="Close dialog">×</button><div id="modal-body"></div></dialog></body></html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6f6f0">
+    <title>Roam Together · Find your people</title>
+    <link rel="stylesheet" href="/src/assets/css/tokens.css">
+    <link rel="stylesheet" href="/src/assets/css/base.css">
+    <link rel="stylesheet" href="/src/assets/css/layout.css">
+    <link rel="stylesheet" href="/src/assets/css/components.css">
+    <link rel="stylesheet" href="/src/assets/css/responsive.css">
+    <script defer src="/src/context/app-state.js"></script>
+    <script defer src="/src/utils/dom.js"></script>
+    <script defer src="/src/apis/client.js"></script>
+    <script defer src="/src/hooks/use-action.js"></script>
+    <script defer src="/src/pages/auth.js"></script>
+    <script defer src="/src/pages/trip-planner.js"></script>
+    <script defer src="/src/pages/journeys.js"></script>
+    <script defer src="/src/pages/hotels.js"></script>
+    <script defer src="/src/components/profile-dialog.js"></script>
+    <script defer src="/src/main.js"></script>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/">roam<span>together</span></a>
+      <nav aria-label="Main navigation">
+        <button data-view="plan">Explore trips</button>
+        <button data-view="dashboard">My journeys</button>
+      </nav>
+      <div id="account"></div>
+    </header>
+
+    <main>
+      <section class="hero" aria-label="Welcome">
+        <div>
+          <span class="eyebrow">GOOD PLACES. BETTER COMPANY.</span>
+          <h1>The world is better<br>with <em>your people.</em></h1>
+          <p>Find a shared interest. Plan a little adventure. Make a journey worth sharing.</p>
+          <div class="hero-tags">
+            <span>Japan &amp; UAE</span>
+            <span>April 2027</span>
+            <span>Small groups, big memories</span>
+          </div>
+        </div>
+        <div class="hero-photo">
+          <img src="/images/hotels/HOTEL-RYOKAN-1.jpg" alt="A peaceful Japanese ryokan">
+          <div class="photo-caption">A slower kind of getaway<span>Find your next chapter</span></div>
+        </div>
+      </section>
+
+      <div id="notice" role="status" aria-live="polite"></div>
+      <section id="content" aria-live="polite"></section>
+
+      <footer>
+        <span>Roam together · Go somewhere. Meet someone.</span>
+        <span>Made for curious travellers.</span>
+      </footer>
+    </main>
+
+    <dialog id="modal" aria-label="Details">
+      <button id="close-modal" class="close" aria-label="Close dialog">×</button>
+      <div id="modal-body"></div>
+    </dialog>
+  </body>
+</html>

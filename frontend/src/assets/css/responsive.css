@@ -1,0 +1,30 @@
+@media (max-width: 950px) {
+  main { padding: 28px 25px 0; }
+  .hero { gap: 28px; }
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .request-columns { grid-template-columns: 1fr; gap: 10px; }
+}
+@media (max-width: 650px) {
+  header { position: static; min-height: 70px; flex-wrap: wrap; padding: 14px 18px; }
+  .brand { font-size: 21px; }
+  #account { margin-left: auto; }
+  nav { order: 3; width: 100%; }
+  nav button { flex: 1; padding: 10px; }
+  main { padding: 20px 16px 0; }
+  .hero { grid-template-columns: 1fr; gap: 20px; padding: 12px 0 28px; }
+  .hero h1 { margin: 15px 0 12px; letter-spacing: -2px; }
+  .hero p { font-size: 14px; }
+  .hero-photo { height: 205px; border-radius: 42px 14px 14px; }
+  .hero-tags { margin-top: 16px; }
+  .form-grid, .cards { grid-template-columns: 1fr; }
+  .panel { padding: 21px; }
+  .section-head { align-items: flex-start; }
+  .request { align-items: flex-start; flex-wrap: wrap; }
+  .request > div { display: flex; flex-wrap: wrap; }
+  .actions { align-items: stretch; }
+  .actions button { width: 100%; }
+  footer span { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}

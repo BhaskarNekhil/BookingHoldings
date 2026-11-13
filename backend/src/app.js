@@ -17,6 +17,7 @@ const app = express();
 app.use(express.json());
 app.use(requestLogger);
 app.use(express.static(path.join(__dirname, '../../frontend/public')));
+app.use('/src', express.static(path.join(__dirname, '../../frontend/src')));
 
 app.get('/api/profiles/:userId', requireAuth, async (req, res, next) => {
   try {
