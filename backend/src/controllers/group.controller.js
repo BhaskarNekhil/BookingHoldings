@@ -25,13 +25,14 @@ async function create(req, res, next) {
       !checkIn ||
       !checkOut ||
       !maxSize ||
-      !budgetInr
+      !budgetInr ||
+      !["ANY", "SAME_GENDER"].includes(req.body.genderPreference)
     )
       return res
         .status(400)
         .json({
           message:
-            "name, destination, dates, maxSize and budgetInr are required",
+            "name, destination, dates, maxSize, budgetInr and a valid gender preference are required",
         });
     res.status(201).json(await service.create(req.user.userId, req.body));
   } catch (e) {

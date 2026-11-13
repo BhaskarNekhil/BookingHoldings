@@ -87,11 +87,16 @@ CREATE TABLE IF NOT EXISTS trips (
   check_out DATE NOT NULL,
   budget_inr INTEGER NOT NULL CHECK (budget_inr > 0),
   itinerary TEXT,
+  gender_preference VARCHAR(20) CHECK (gender_preference IN ('ANY', 'SAME_GENDER')),
   status VARCHAR(20) NOT NULL DEFAULT 'active'
     CHECK (status IN ('active', 'completed', 'cancelled')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CHECK (check_out > check_in)
 );
+
+-- Trip-level preference keeps seeded trips intact while letting each new trip choose separately.
+ALTER TABLE trips ADD COLUMN IF NOT EXISTS gender_preference VARCHAR(20)
+  CHECK (gender_preference IN ('ANY', 'SAME_GENDER'));
 
 CREATE INDEX IF NOT EXISTS trips_date_idx
   ON trips(check_in, check_out);

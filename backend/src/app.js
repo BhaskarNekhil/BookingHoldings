@@ -25,7 +25,11 @@ app.get('/api/profiles/:userId', requireAuth, async (req, res, next) => {
     if (!result.rows.length) return res.status(404).json({message:'Traveller not found'});
     const interests = await pool.query(`SELECT i.id, i.label, i.category FROM interests i
       JOIN user_interests ui ON ui.interest_id=i.id WHERE ui.user_id=$1 ORDER BY i.label`, [req.params.userId]);
-    res.json({...result.rows[0], interests:interests.rows});
+    const tripPreferences = await pool.query(`SELECT role,destination,check_in,check_out,
+      COALESCE(gender_preference,$2,'ANY') AS gender_preference
+      FROM trips WHERE user_id=$1 AND status='active' ORDER BY created_at DESC`,
+      [req.params.userId,result.rows[0].gender_preference]);
+    res.json({...result.rows[0], interests:interests.rows, trip_preferences:tripPreferences.rows});
   } catch(e) { next(e); }
 });
 

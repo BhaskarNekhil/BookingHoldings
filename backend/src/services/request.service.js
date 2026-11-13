@@ -29,9 +29,18 @@ async function create(groupId, userId) {
       throw e;
     }
     const result = await c.query(
-      "INSERT INTO join_requests(group_id,seeker_id) VALUES($1,$2) RETURNING id,group_id,seeker_id,status,created_at",
+      `INSERT INTO join_requests(group_id,seeker_id) VALUES($1,$2)
+       ON CONFLICT (group_id,seeker_id) DO UPDATE
+       SET status='PENDING',reviewed_by=NULL,reviewed_at=NULL,created_at=CURRENT_TIMESTAMP
+       WHERE join_requests.status='CANCELLED'
+       RETURNING id,group_id,seeker_id,status,created_at`,
       [groupId, userId],
     );
+    if (!result.rowCount) {
+      const e = new Error("You already have an active request for this group");
+      e.statusCode = 409;
+      throw e;
+    }
     await c.query("COMMIT");
     return result.rows[0];
   } catch (e) {

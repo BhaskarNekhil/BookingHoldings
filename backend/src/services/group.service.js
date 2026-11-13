@@ -13,7 +13,7 @@ async function create(userId, input) {
       input.checkOut,
     );
     const t = await c.query(
-      `INSERT INTO trips(user_id,role,destination,check_in,check_out,budget_inr,itinerary) VALUES($1,'creator',$2,$3,$4,$5,$6) RETURNING id`,
+      `INSERT INTO trips(user_id,role,destination,check_in,check_out,budget_inr,itinerary,gender_preference) VALUES($1,'creator',$2,$3,$4,$5,$6,$7) RETURNING id`,
       [
         userId,
         input.destination,
@@ -21,6 +21,7 @@ async function create(userId, input) {
         input.checkOut,
         input.budgetInr,
         input.itinerary || null,
+        input.genderPreference,
       ],
     );
     const id = `G-${crypto.randomUUID()}`;
@@ -137,11 +138,19 @@ async function finalizeStay(groupId, userId, roomId) {
       `INSERT INTO group_room_recommendations(group_id,room_id,recommended_by) VALUES($1,$2,$3)
        ON CONFLICT (group_id) DO UPDATE SET room_id=EXCLUDED.room_id,recommended_by=EXCLUDED.recommended_by,updated_at=CURRENT_TIMESTAMP`,
       [groupId,roomId,userId]);
-    await c.query(
-      `INSERT INTO group_member_expenses(group_id,user_id,expenditure_inr)
-       SELECT $1,user_id,($2::integer / $3::integer) + CASE
-         WHEN row_number() OVER (ORDER BY user_id) <= ($2::integer % $3::integer) THEN 1 ELSE 0 END
-       FROM group_members WHERE group_id=$1`, [groupId,totalCost,g.member_count]);
+    const groupMembers = await c.query(
+      "SELECT user_id FROM group_members WHERE group_id=$1 ORDER BY user_id",
+      [groupId],
+    );
+    const baseExpense = Math.floor(totalCost / groupMembers.rowCount);
+    const extraRupees = totalCost % groupMembers.rowCount;
+    for (const [index, member] of groupMembers.rows.entries()) {
+      await c.query(
+        `INSERT INTO group_member_expenses(group_id,user_id,expenditure_inr)
+         VALUES($1,$2,$3)`,
+        [groupId, member.user_id, baseExpense + (index < extraRupees ? 1 : 0)],
+      );
+    }
     await c.query("UPDATE groups SET status='CLOSED' WHERE id=$1", [groupId]);
     await c.query(
       "UPDATE join_requests SET status='CANCELLED',reviewed_at=CURRENT_TIMESTAMP WHERE group_id=$1 AND status='PENDING'",

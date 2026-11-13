@@ -9,11 +9,14 @@ async function createTrip(req, res, next) {
       budgetInr,
       interests = [],
       itinerary = null,
+      genderPreference,
     } = req.body;
     if (!["creator", "seeker"].includes(role))
       return res
         .status(400)
         .json({ message: "role must be creator or seeker" });
+    if (!["ANY", "SAME_GENDER"].includes(genderPreference))
+      return res.status(400).json({ message: "Choose a valid travel gender preference" });
     const trip = await service.createTrip(req.user.userId, {
       role,
       destination,
@@ -22,6 +25,7 @@ async function createTrip(req, res, next) {
       budgetInr,
       interests,
       itinerary,
+      genderPreference,
     });
     return res.status(201).json({ trip });
   } catch (e) {
