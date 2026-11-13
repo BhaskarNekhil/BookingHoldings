@@ -1,47 +1,69 @@
 const express = require("express");
 const path = require("node:path");
-const pool = require('./config/db');
-const { requireAuth } = require('./middleware/auth.middleware');
+const pool = require("./config/db");
+const { requireAuth } = require("./middleware/auth.middleware");
 const authRoutes = require("./routes/auth.routes");
 const locationRoutes = require("./routes/location.routes");
 const tripRoutes = require("./routes/trip.routes");
 const groupRoutes = require("./routes/group.routes");
 const matchRoutes = require("./routes/match.routes");
 const hotelRoutes = require("./routes/hotel.routes");
-const requestRoutes = require('./routes/request.routes');
-const requestLogger = require('./middleware/request-logger.middleware');
-const errorHandler = require('./middleware/error.middleware');
+const requestRoutes = require("./routes/request.routes");
+const requestLogger = require("./middleware/request-logger.middleware");
+const errorHandler = require("./middleware/error.middleware");
 
 const app = express();
 
 app.use(express.json());
 app.use(requestLogger);
-app.use(express.static(path.join(__dirname, '../../frontend/public')));
-app.use('/src', express.static(path.join(__dirname, '../../frontend/src')));
+app.use(express.static(path.join(__dirname, "../../frontend/public")));
+app.use("/src", express.static(path.join(__dirname, "../../frontend/src")));
 
-app.get('/api/profiles/:userId', requireAuth, async (req, res, next) => {
+app.get("/api/profiles/:userId", requireAuth, async (req, res, next) => {
   try {
-    const result = await pool.query(`SELECT id, name, age, gender, home_city,
-      home_airport, gender_preference FROM users WHERE id=$1`, [req.params.userId]);
-    if (!result.rows.length) return res.status(404).json({message:'Traveller not found'});
-    const interests = await pool.query(`SELECT i.id, i.label, i.category FROM interests i
-      JOIN user_interests ui ON ui.interest_id=i.id WHERE ui.user_id=$1 ORDER BY i.label`, [req.params.userId]);
-    const tripPreferences = await pool.query(`SELECT role,destination,check_in,check_out,
+    const result = await pool.query(
+      `SELECT id, name, age, gender, home_city,
+      home_airport, gender_preference FROM users WHERE id=$1`,
+      [req.params.userId],
+    );
+    if (!result.rows.length)
+      return res.status(404).json({ message: "Traveller not found" });
+    const interests = await pool.query(
+      `SELECT i.id, i.label, i.category FROM interests i
+      JOIN user_interests ui ON ui.interest_id=i.id WHERE ui.user_id=$1 ORDER BY i.label`,
+      [req.params.userId],
+    );
+    const tripPreferences = await pool.query(
+      `SELECT role,destination,check_in,check_out,
       COALESCE(gender_preference,$2,'ANY') AS gender_preference
       FROM trips WHERE user_id=$1 AND status='active' ORDER BY created_at DESC`,
-      [req.params.userId,result.rows[0].gender_preference]);
-    res.json({...result.rows[0], interests:interests.rows, trip_preferences:tripPreferences.rows});
-  } catch(e) { next(e); }
+      [req.params.userId, result.rows[0].gender_preference],
+    );
+    res.json({
+      ...result.rows[0],
+      interests: interests.rows,
+      trip_preferences: tripPreferences.rows,
+    });
+  } catch (e) {
+    next(e);
+  }
 });
 
-app.get('/api/interests', async (req, res, next) => {
-  try { res.json((await pool.query('SELECT * FROM interests ORDER BY category, label')).rows); }
-  catch (e) { next(e); }
+app.get("/api/interests", async (req, res, next) => {
+  try {
+    res.json(
+      (await pool.query("SELECT * FROM interests ORDER BY category, label"))
+        .rows,
+    );
+  } catch (e) {
+    next(e);
+  }
 });
-app.get('/api/dashboard', requireAuth, async (req, res, next) => {
+app.get("/api/dashboard", requireAuth, async (req, res, next) => {
   try {
     const id = req.user.userId;
-    const groups = await pool.query(`SELECT g.*, t.destination, t.check_in, t.check_out,
+    const groups = await pool.query(
+      `SELECT g.*, t.destination, t.check_in, t.check_out,
       t.budget_inr, t.itinerary, (SELECT COUNT(*)::int FROM group_members WHERE group_id=g.id) AS member_count,
       (SELECT expenditure_inr FROM group_member_expenses WHERE group_id=g.id AND user_id=$1) AS my_expenditure_inr,
       fs.cost_per_member_inr AS finalized_cost_per_member_inr, h.name AS finalized_hotel_name, r.name AS finalized_room_name,
@@ -50,9 +72,15 @@ app.get('/api/dashboard', requireAuth, async (req, res, next) => {
       LEFT JOIN group_finalization_status gfs ON gfs.group_id=g.id
       LEFT JOIN finalized_stays fs ON fs.group_id=g.id
       LEFT JOIN hotels h ON h.id=fs.hotel_id LEFT JOIN rooms r ON r.id=fs.room_id
-      WHERE EXISTS (SELECT 1 FROM group_members m WHERE m.group_id=g.id AND m.user_id=$1)`, [id]);
-    const trips = await pool.query("SELECT * FROM trips WHERE user_id=$1 AND role='seeker' ORDER BY id DESC", [id]);
-    const requests = await pool.query(`SELECT r.*, g.name, g.owner_id, t.destination,
+      WHERE EXISTS (SELECT 1 FROM group_members m WHERE m.group_id=g.id AND m.user_id=$1)`,
+      [id],
+    );
+    const trips = await pool.query(
+      "SELECT * FROM trips WHERE user_id=$1 AND role='seeker' ORDER BY id DESC",
+      [id],
+    );
+    const requests = await pool.query(
+      `SELECT r.*, g.name, g.owner_id, t.destination,
       e.expenditure_inr,
       rec_h.name AS recommended_hotel_name, rec_r.name AS recommended_room_name,
       to_char(t.check_in, 'YYYY-MM-DD') AS check_in,
@@ -61,15 +89,30 @@ app.get('/api/dashboard', requireAuth, async (req, res, next) => {
       JOIN trips t ON t.id=g.trip_id LEFT JOIN group_member_expenses e ON e.group_id=g.id AND e.user_id=r.seeker_id
       LEFT JOIN group_room_recommendations rec ON rec.group_id=g.id
       LEFT JOIN rooms rec_r ON rec_r.id=rec.room_id LEFT JOIN hotels rec_h ON rec_h.id=rec_r.hotel_id
-      WHERE r.seeker_id=$1 ORDER BY r.id DESC`, [id]);
-    const incoming = await pool.query(`SELECT r.id, r.group_id, r.status, r.seeker_id,
+      WHERE r.seeker_id=$1 ORDER BY r.id DESC`,
+      [id],
+    );
+    const incoming = await pool.query(
+      `SELECT r.id, r.group_id, r.status, r.seeker_id,
       u.name, u.home_city FROM join_requests r
       JOIN groups g ON g.id=r.group_id JOIN users u ON u.id=r.seeker_id
-      WHERE g.owner_id=$1 ORDER BY r.created_at DESC`, [id]);
-    const interests = await pool.query('SELECT interest_id FROM user_interests WHERE user_id=$1', [id]);
-    res.json({groups:groups.rows,trips:trips.rows,requests:requests.rows,
-      incoming:incoming.rows,interests:interests.rows.map(x=>x.interest_id)});
-  } catch(e) { next(e); }
+      WHERE g.owner_id=$1 ORDER BY r.created_at DESC`,
+      [id],
+    );
+    const interests = await pool.query(
+      "SELECT interest_id FROM user_interests WHERE user_id=$1",
+      [id],
+    );
+    res.json({
+      groups: groups.rows,
+      trips: trips.rows,
+      requests: requests.rows,
+      incoming: incoming.rows,
+      interests: interests.rows.map((x) => x.interest_id),
+    });
+  } catch (e) {
+    next(e);
+  }
 });
 
 app.get("/health", (req, res) => {
@@ -80,7 +123,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/locations", locationRoutes);
 app.use("/api/trips", tripRoutes);
 app.use("/api/groups", groupRoutes);
-app.use('/api/requests',requestRoutes);
+app.use("/api/requests", requestRoutes);
 app.use("/api/matches", matchRoutes);
 app.use("/api", hotelRoutes);
 

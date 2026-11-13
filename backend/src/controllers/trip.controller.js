@@ -16,7 +16,9 @@ async function createTrip(req, res, next) {
         .status(400)
         .json({ message: "role must be creator or seeker" });
     if (!["ANY", "SAME_GENDER"].includes(genderPreference))
-      return res.status(400).json({ message: "Choose a valid travel gender preference" });
+      return res
+        .status(400)
+        .json({ message: "Choose a valid travel gender preference" });
     const trip = await service.createTrip(req.user.userId, {
       role,
       destination,
@@ -31,7 +33,8 @@ async function createTrip(req, res, next) {
   } catch (e) {
     if (e.code === "P0001") {
       e.statusCode = 409;
-      e.message = "You already have a trip in this time interval. Choose dates outside your existing trip to continue.";
+      e.message =
+        "You already have a trip in this time interval. Choose dates outside your existing trip to continue.";
     }
     next(e);
   }

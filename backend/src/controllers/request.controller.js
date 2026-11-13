@@ -1,11 +1,9 @@
 const service = require("../services/request.service");
 async function create(req, res, next) {
   try {
-    res
-      .status(201)
-      .json({
-        request: await service.create(req.params.groupId, req.user.userId),
-      });
+    res.status(201).json({
+      request: await service.create(req.params.groupId, req.user.userId),
+    });
   } catch (e) {
     if (e.code === "23505") e.statusCode = 409;
     next(e);

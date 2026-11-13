@@ -38,8 +38,10 @@ async function list(req, res, next) {
       finalization_status: finalizationStatus,
       member_expenses: memberExpenses,
       recommended_room: recommendation,
-      can_finalize: c.owner_id === req.user.userId && finalizationStatus !== 'finalized',
-      can_recommend: c.owner_id === req.user.userId && finalizationStatus !== 'finalized',
+      can_finalize:
+        c.owner_id === req.user.userId && finalizationStatus !== "finalized",
+      can_recommend:
+        c.owner_id === req.user.userId && finalizationStatus !== "finalized",
       hotels,
     });
   } catch (e) {

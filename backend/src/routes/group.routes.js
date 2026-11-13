@@ -1,14 +1,39 @@
-const router=require('express').Router();
-const {requireAuth}=require('../middleware/auth.middleware');
-const idempotency=require('../middleware/idempotency.middleware');
-const controller=require('../controllers/group.controller');
-const requestController=require('../controllers/request.controller');
-router.post('/',requireAuth,idempotency,controller.create);
-router.delete('/:groupId',requireAuth,idempotency,controller.remove);
-router.delete('/:groupId/membership',requireAuth,idempotency,controller.leave);
-router.post('/:groupId/finalize',requireAuth,idempotency,controller.finalize);
-router.put('/:groupId/recommendation',requireAuth,idempotency,controller.recommend);
-router.post('/:groupId/requests',requireAuth,idempotency,requestController.create);
-router.get('/:groupId/requests',requireAuth,requestController.list);
-router.patch('/requests/:requestId',requireAuth,idempotency,requestController.review);
-module.exports=router;
+const router = require("express").Router();
+const { requireAuth } = require("../middleware/auth.middleware");
+const idempotency = require("../middleware/idempotency.middleware");
+const controller = require("../controllers/group.controller");
+const requestController = require("../controllers/request.controller");
+router.post("/", requireAuth, idempotency, controller.create);
+router.delete("/:groupId", requireAuth, idempotency, controller.remove);
+router.delete(
+  "/:groupId/membership",
+  requireAuth,
+  idempotency,
+  controller.leave,
+);
+router.post(
+  "/:groupId/finalize",
+  requireAuth,
+  idempotency,
+  controller.finalize,
+);
+router.put(
+  "/:groupId/recommendation",
+  requireAuth,
+  idempotency,
+  controller.recommend,
+);
+router.post(
+  "/:groupId/requests",
+  requireAuth,
+  idempotency,
+  requestController.create,
+);
+router.get("/:groupId/requests", requireAuth, requestController.list);
+router.patch(
+  "/requests/:requestId",
+  requireAuth,
+  idempotency,
+  requestController.review,
+);
+module.exports = router;

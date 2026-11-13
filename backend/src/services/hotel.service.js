@@ -7,27 +7,39 @@ async function loadContext(groupId, userId) {
   return r.rows[0];
 }
 async function loadFinalizedStay(groupId) {
-  const r=await pool.query(`SELECT fs.*,h.name AS hotel_name,r.name AS room_name
-    FROM finalized_stays fs JOIN hotels h ON h.id=fs.hotel_id JOIN rooms r ON r.id=fs.room_id WHERE fs.group_id=$1`,[groupId]);
-  return r.rows[0]||null;
+  const r = await pool.query(
+    `SELECT fs.*,h.name AS hotel_name,r.name AS room_name
+    FROM finalized_stays fs JOIN hotels h ON h.id=fs.hotel_id JOIN rooms r ON r.id=fs.room_id WHERE fs.group_id=$1`,
+    [groupId],
+  );
+  return r.rows[0] || null;
 }
 async function loadFinalizationStatus(groupId) {
-  const r=await pool.query("SELECT status FROM group_finalization_status WHERE group_id=$1",[groupId]);
+  const r = await pool.query(
+    "SELECT status FROM group_finalization_status WHERE group_id=$1",
+    [groupId],
+  );
   return r.rows[0]?.status || "unfinalized";
 }
 async function loadMemberExpenses(groupId) {
-  const r=await pool.query(`SELECT e.group_id,e.user_id,u.name,e.expenditure_inr
+  const r = await pool.query(
+    `SELECT e.group_id,e.user_id,u.name,e.expenditure_inr
     FROM group_member_expenses e JOIN users u ON u.id=e.user_id
-    WHERE e.group_id=$1 ORDER BY u.name`,[groupId]);
+    WHERE e.group_id=$1 ORDER BY u.name`,
+    [groupId],
+  );
   return r.rows;
 }
 async function loadRecommendation(groupId) {
-  const r=await pool.query(`SELECT gr.room_id,gr.recommended_by,u.name AS recommended_by_name,
+  const r = await pool.query(
+    `SELECT gr.room_id,gr.recommended_by,u.name AS recommended_by_name,
       h.name AS hotel_name,ro.name AS room_name,gr.updated_at
     FROM group_room_recommendations gr JOIN rooms ro ON ro.id=gr.room_id
     JOIN hotels h ON h.id=ro.hotel_id JOIN users u ON u.id=gr.recommended_by
-    WHERE gr.group_id=$1`,[groupId]);
-  return r.rows[0]||null;
+    WHERE gr.group_id=$1`,
+    [groupId],
+  );
+  return r.rows[0] || null;
 }
 async function loadBudget(groupId, c) {
   const r = await pool.query(
@@ -43,4 +55,12 @@ async function loadRooms(c, nights) {
   );
   return r.rows;
 }
-module.exports = { loadContext, loadBudget, loadRooms, loadFinalizedStay, loadFinalizationStatus, loadMemberExpenses, loadRecommendation };
+module.exports = {
+  loadContext,
+  loadBudget,
+  loadRooms,
+  loadFinalizedStay,
+  loadFinalizationStatus,
+  loadMemberExpenses,
+  loadRecommendation,
+};

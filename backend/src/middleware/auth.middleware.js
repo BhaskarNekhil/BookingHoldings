@@ -5,13 +5,15 @@ function requireAuth(req, res, next) {
   const token = header.startsWith("Bearer ") ? header.slice(7) : null;
 
   if (!token) {
-    return res.status(401).json({ message: "Authentication token is required" });
+    return res
+      .status(401)
+      .json({ message: "Authentication token is required" });
   }
 
   try {
     req.user = jwt.verify(
       token,
-      process.env.JWT_SECRET || "development-only-secret"
+      process.env.JWT_SECRET || "development-only-secret",
     );
     next();
   } catch {
