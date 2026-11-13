@@ -1,17 +1,21 @@
-const pool = require('../config/db');
+const pool = require("../config/db");
 
 async function getSeekerTrip(tripId, userId) {
-  const result = await pool.query(`SELECT t.*, u.gender, u.gender_preference,
+  const result = await pool.query(
+    `SELECT t.*, u.gender, u.gender_preference,
     COALESCE(array_agg(DISTINCT ti.interest_id) FILTER (WHERE ti.interest_id IS NOT NULL), '{}') AS interests
     FROM trips t JOIN users u ON u.id=t.user_id
     LEFT JOIN trip_interests ti ON ti.trip_id=t.id
     WHERE t.id=$1 AND t.user_id=$2 AND t.role='seeker'
-    GROUP BY t.id,u.gender,u.gender_preference`, [tripId,userId]);
+    GROUP BY t.id,u.gender,u.gender_preference`,
+    [tripId, userId],
+  );
   return result.rows[0];
 }
 
 async function getOpenGroups() {
-  const result = await pool.query(`SELECT g.id,g.name,g.owner_id,g.max_size,g.status,
+  const result =
+    await pool.query(`SELECT g.id,g.name,g.owner_id,g.max_size,g.status,
     t.destination,t.check_in,t.check_out,t.budget_inr,t.itinerary,
     u.name AS owner_name,u.gender AS owner_gender,
     u.gender_preference AS owner_gender_preference,

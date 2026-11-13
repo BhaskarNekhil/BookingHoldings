@@ -8,6 +8,7 @@ const tripRoutes = require("./routes/trip.routes");
 const groupRoutes = require("./routes/group.routes");
 const matchRoutes = require("./routes/match.routes");
 const hotelRoutes = require("./routes/hotel.routes");
+const requestRoutes = require('./routes/request.routes');
 const requestLogger = require('./middleware/request-logger.middleware');
 const errorHandler = require('./middleware/error.middleware');
 
@@ -63,6 +64,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/locations", locationRoutes);
 app.use("/api/trips", tripRoutes);
 app.use("/api/groups", groupRoutes);
+app.use('/api/requests',requestRoutes);
 app.use("/api/matches", matchRoutes);
 app.use("/api", hotelRoutes);
 
