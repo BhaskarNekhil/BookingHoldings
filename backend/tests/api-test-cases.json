@@ -1,0 +1,647 @@
+{
+  "title": "Group Travel Matcher API integration cases",
+  "database": "BookingHoldings_test",
+  "caseCount": 80,
+  "cases": [
+    {
+      "id": "AU-01",
+      "area": "AU",
+      "feature": "Login as T-001 using `t-001@seed.local` / `Password@123`",
+      "expectedBehavior": "200; Sarah Thomas and JWT returned",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AU-02",
+      "area": "AU",
+      "feature": "Login as T-002 using `t-002@seed.local` / `Password@123`",
+      "expectedBehavior": "200; Priya Shah and JWT returned",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AU-03",
+      "area": "AU",
+      "feature": "Login as T-024 using `t-024@seed.local` / `Password@123`",
+      "expectedBehavior": "200; Aditya Rao and JWT returned",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AU-04",
+      "area": "AU",
+      "feature": "Login with T-001 email and incorrect password",
+      "expectedBehavior": "401; generic invalid credentials message",
+      "expectedHttpStatus": 401,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AU-05",
+      "area": "AU",
+      "feature": "Login with an email not present in travellers JSON",
+      "expectedBehavior": "401; invalid credentials",
+      "expectedHttpStatus": 401,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AU-06",
+      "area": "AU",
+      "feature": "Login with missing email",
+      "expectedBehavior": "401; no token issued",
+      "expectedHttpStatus": 401,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AU-07",
+      "area": "AU",
+      "feature": "Login with missing password",
+      "expectedBehavior": "401; no token issued",
+      "expectedHttpStatus": 401,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AU-08",
+      "area": "AU",
+      "feature": "Signup with T-002's already-seeded email",
+      "expectedBehavior": "409; duplicate email message",
+      "expectedHttpStatus": 409,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AU-09",
+      "area": "AU",
+      "feature": "Signup with a new email and valid identity fields based on a traveller record",
+      "expectedBehavior": "201; user and token returned, password hash omitted",
+      "expectedHttpStatus": 201,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AU-10",
+      "area": "AU",
+      "feature": "Signup with missing email, name, password, or gender (one field omitted per request)",
+      "expectedBehavior": "400 for each missing required field",
+      "expectedHttpStatus": 400,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TR-01",
+      "area": "TR",
+      "feature": "Authenticated T-002 creates a seeker trip: Kyoto, 10–15 Apr 2027, ₹62,000, two interests",
+      "expectedBehavior": "201; seeker trip returned with selected values",
+      "expectedHttpStatus": 201,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TR-02",
+      "area": "TR",
+      "feature": "Create trip with role `admin`",
+      "expectedBehavior": "400; invalid role",
+      "expectedHttpStatus": 400,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TR-03",
+      "area": "TR",
+      "feature": "Create trip with gender preference `MALE_ONLY`",
+      "expectedBehavior": "400; invalid preference",
+      "expectedHttpStatus": 400,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TR-04",
+      "area": "TR",
+      "feature": "Create trip with unknown destination `Kyotox`",
+      "expectedBehavior": "400; destination must be selected from catalog",
+      "expectedHttpStatus": 400,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TR-05",
+      "area": "TR",
+      "feature": "Create trip without a bearer token",
+      "expectedBehavior": "401; authentication required",
+      "expectedHttpStatus": 401,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TR-06",
+      "area": "TR",
+      "feature": "T-001 creates a seeker trip overlapping Sarah's seeded creator trip (10–15 Apr)",
+      "expectedBehavior": "409; conflicting interval explained",
+      "expectedHttpStatus": 409,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TR-07",
+      "area": "TR",
+      "feature": "Create an opposite-role trip starting on the creator trip's checkout date",
+      "expectedBehavior": "201 if all other fields are valid; checkout is exclusive",
+      "expectedHttpStatus": 201,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TR-08",
+      "area": "TR",
+      "feature": "Create trip with checkout before check-in",
+      "expectedBehavior": "400 validation response expected; currently may surface as a database constraint error",
+      "expectedHttpStatus": 400,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TR-09",
+      "area": "TR",
+      "feature": "Create trip with zero/negative budget",
+      "expectedBehavior": "400 validation response expected; currently may surface as a database constraint error",
+      "expectedHttpStatus": 400,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TR-10",
+      "area": "TR",
+      "feature": "Create trip with an unknown interest ID",
+      "expectedBehavior": "400 validation response expected; currently may surface as a foreign-key error",
+      "expectedHttpStatus": 400,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "GR-01",
+      "area": "GR",
+      "feature": "Authenticated user creates a Kyoto group with valid dates, budget, interests, gender preference, and size",
+      "expectedBehavior": "201; group created with creator as first member",
+      "expectedHttpStatus": 201,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "GR-02",
+      "area": "GR",
+      "feature": "Create group without a name",
+      "expectedBehavior": "400; required fields message",
+      "expectedHttpStatus": 400,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "GR-03",
+      "area": "GR",
+      "feature": "Create group without gender preference",
+      "expectedBehavior": "400; valid preference required",
+      "expectedHttpStatus": 400,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "GR-04",
+      "area": "GR",
+      "feature": "T-001 creates a group overlapping Sarah's existing seeded creator trip",
+      "expectedBehavior": "409; conflicting interval message",
+      "expectedHttpStatus": 409,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "GR-05",
+      "area": "GR",
+      "feature": "Create a group using a non-catalog destination",
+      "expectedBehavior": "4xx validation expected; currently may surface as a foreign-key error",
+      "expectedHttpStatus": 400,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "GR-06",
+      "area": "GR",
+      "feature": "Delete G-01 as Sarah (T-001)",
+      "expectedBehavior": "200; group and dependent records removed",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "GR-07",
+      "area": "GR",
+      "feature": "Delete G-01 as non-owner Priya (T-002)",
+      "expectedBehavior": "404/authorization error; group remains",
+      "expectedHttpStatus": 404,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "GR-08",
+      "area": "GR",
+      "feature": "Delete a nonexistent group ID",
+      "expectedBehavior": "404; not found",
+      "expectedHttpStatus": 404,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "GR-09",
+      "area": "GR",
+      "feature": "Finalize G-01 without `roomId`",
+      "expectedBehavior": "400; `roomId` required",
+      "expectedHttpStatus": 400,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "GR-10",
+      "area": "GR",
+      "feature": "Recommend a room outside the group's destination or finalize as a non-owner",
+      "expectedBehavior": "400 for wrong-destination room / 403 for non-owner; no state change",
+      "expectedHttpStatus": 400,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "RQ-01",
+      "area": "RQ",
+      "feature": "Priya (T-002) requests to join open G-01",
+      "expectedBehavior": "201; request status `PENDING`",
+      "expectedHttpStatus": 201,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "RQ-02",
+      "area": "RQ",
+      "feature": "Sarah (T-001) requests to join her own G-01",
+      "expectedBehavior": "400; owner cannot join own group",
+      "expectedHttpStatus": 400,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "RQ-03",
+      "area": "RQ",
+      "feature": "Request to a nonexistent group",
+      "expectedBehavior": "404; group not found",
+      "expectedHttpStatus": 404,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "RQ-04",
+      "area": "RQ",
+      "feature": "Priya submits the same active G-01 request twice",
+      "expectedBehavior": "First 201; second 409; only one active request",
+      "expectedHttpStatus": 409,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "RQ-05",
+      "area": "RQ",
+      "feature": "Sarah lists G-01 requests",
+      "expectedBehavior": "200; includes Priya's pending request",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "RQ-06",
+      "area": "RQ",
+      "feature": "Priya tries to list G-01 requests",
+      "expectedBehavior": "403; only owner may view incoming requests",
+      "expectedHttpStatus": 403,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "RQ-07",
+      "area": "RQ",
+      "feature": "Sarah approves Priya's pending request",
+      "expectedBehavior": "200; request `APPROVED`, Priya added to members",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "RQ-08",
+      "area": "RQ",
+      "feature": "Sarah rejects a pending request",
+      "expectedBehavior": "200; request `REJECTED`, member count unchanged",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "RQ-09",
+      "area": "RQ",
+      "feature": "Review a request with unsupported status `WAITING`",
+      "expectedBehavior": "400; only `APPROVED` or `REJECTED` accepted",
+      "expectedHttpStatus": 400,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "RQ-10",
+      "area": "RQ",
+      "feature": "Approve an already reviewed request or review as a non-owner",
+      "expectedBehavior": "409 for already reviewed / 403 for non-owner; no unintended membership change",
+      "expectedHttpStatus": 409,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "MA-01",
+      "area": "MA",
+      "feature": "Priya seeks Kyoto, 10–15 Apr, ₹62,000; interests include TEMPLES and STREET_FOOD",
+      "expectedBehavior": "Sarah's G-01 is a match (5 shared nights)",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "MA-02",
+      "area": "MA",
+      "feature": "Search with a trip ID not owned by Priya",
+      "expectedBehavior": "404; seeker trip not found",
+      "expectedHttpStatus": 404,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "MA-03",
+      "area": "MA",
+      "feature": "Search without a valid `tripId`",
+      "expectedBehavior": "400; valid trip ID required",
+      "expectedHttpStatus": 400,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "MA-04",
+      "area": "MA",
+      "feature": "Change seeker destination to Osaka",
+      "expectedBehavior": "Kyoto groups, including G-01, do not match",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "MA-05",
+      "area": "MA",
+      "feature": "Dates overlap only one night",
+      "expectedBehavior": "Group does not match",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "MA-06",
+      "area": "MA",
+      "feature": "Dates overlap exactly two nights",
+      "expectedBehavior": "Group passes date rule if other criteria pass",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "MA-07",
+      "area": "MA",
+      "feature": "Budget pair ₹60,000 and ₹84,000",
+      "expectedBehavior": "Passes exact 40% threshold",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "MA-08",
+      "area": "MA",
+      "feature": "Budget pair ₹60,000 and ₹84,001",
+      "expectedBehavior": "Fails budget rule",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "MA-09",
+      "area": "MA",
+      "feature": "Only one shared interest with the owner",
+      "expectedBehavior": "Group does not match",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "MA-10",
+      "area": "MA",
+      "feature": "Female-only/same-gender restriction conflicts, or group is full",
+      "expectedBehavior": "Group does not match",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LO-01",
+      "area": "LO",
+      "feature": "Search `Kyoto`",
+      "expectedBehavior": "Kyoto appears in results",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LO-02",
+      "area": "LO",
+      "feature": "Search typo `Kyot`",
+      "expectedBehavior": "Fuzzy search returns Kyoto",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LO-03",
+      "area": "LO",
+      "feature": "Search `Osaka`",
+      "expectedBehavior": "Osaka appears in results",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LO-04",
+      "area": "LO",
+      "feature": "Search `Tokyo`",
+      "expectedBehavior": "Tokyo appears in results",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LO-05",
+      "area": "LO",
+      "feature": "Search `Dubai`",
+      "expectedBehavior": "Dubai appears in results",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LO-06",
+      "area": "LO",
+      "feature": "Search `Abu Dhabi`",
+      "expectedBehavior": "Abu Dhabi appears in results",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LO-07",
+      "area": "LO",
+      "feature": "Search one-character query `K`",
+      "expectedBehavior": "Empty array; queries shorter than two characters are ignored",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LO-08",
+      "area": "LO",
+      "feature": "Search a phrase with surrounding spaces, e.g. ` Kyoto `",
+      "expectedBehavior": "Results are trimmed and Kyoto is returned",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LO-09",
+      "area": "LO",
+      "feature": "Search an unrelated city not in the destination catalog",
+      "expectedBehavior": "Empty array",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LO-10",
+      "area": "LO",
+      "feature": "Search a country/partial text from destination JSON",
+      "expectedBehavior": "Matching city/country rows returned, max 10",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "HT-01",
+      "area": "HT",
+      "feature": "Sarah loads hotel options for G-01 (Kyoto, 10–15 Apr)",
+      "expectedBehavior": "200; Kyoto options filtered by dates, rooms, and budget",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "HT-02",
+      "area": "HT",
+      "feature": "Priya loads G-01 hotels before approval",
+      "expectedBehavior": "404/access denied; only group members can view",
+      "expectedHttpStatus": 404,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "HT-03",
+      "area": "HT",
+      "feature": "Priya loads G-01 hotels after approval",
+      "expectedBehavior": "200; group stay options visible",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "HT-04",
+      "area": "HT",
+      "feature": "Authenticated member requests hotels for nonexistent group",
+      "expectedBehavior": "404; group not found/access denied",
+      "expectedHttpStatus": 404,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "HT-05",
+      "area": "HT",
+      "feature": "Request without token",
+      "expectedBehavior": "401; authentication required",
+      "expectedHttpStatus": 401,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "HT-06",
+      "area": "HT",
+      "feature": "Every returned hotel is in the group's destination city",
+      "expectedBehavior": "True for Kyoto group",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "HT-07",
+      "area": "HT",
+      "feature": "Every returned room has availability for every stay night",
+      "expectedBehavior": "True for each returned option",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "HT-08",
+      "area": "HT",
+      "feature": "Returned per-person cost exceeds the smallest member/group budget",
+      "expectedBehavior": "Such option is excluded",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "HT-09",
+      "area": "HT",
+      "feature": "Creator recommends a room in Kyoto",
+      "expectedBehavior": "200; current recommendation is returned to members",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "HT-10",
+      "area": "HT",
+      "feature": "Finalized group loads hotels again",
+      "expectedBehavior": "Finalized stay and per-member expense split returned; no booking/payment created",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "SH-01",
+      "area": "SH",
+      "feature": "`GET /health`",
+      "expectedBehavior": "200 with `{ \"status\": \"ok\" }`",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "SH-02",
+      "area": "SH",
+      "feature": "`GET /api/interests`",
+      "expectedBehavior": "200; catalog agrees with `problem-3/interests.json`",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "SH-03",
+      "area": "SH",
+      "feature": "`GET /api/dashboard` with Priya's token",
+      "expectedBehavior": "200; groups, trips, requests, incoming, and interests arrays returned",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "SH-04",
+      "area": "SH",
+      "feature": "`GET /api/dashboard` without token",
+      "expectedBehavior": "401",
+      "expectedHttpStatus": 401,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "SH-05",
+      "area": "SH",
+      "feature": "Sarah reads Priya's profile using `GET /api/profiles/T-002`",
+      "expectedBehavior": "200; profile and seeded interests returned",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "SH-06",
+      "area": "SH",
+      "feature": "Authenticated request for nonexistent profile ID",
+      "expectedBehavior": "404; traveller not found",
+      "expectedHttpStatus": 404,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "SH-07",
+      "area": "SH",
+      "feature": "Profile request without token",
+      "expectedBehavior": "401",
+      "expectedHttpStatus": 401,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "SH-08",
+      "area": "SH",
+      "feature": "Dashboard group rows for Priya after approval",
+      "expectedBehavior": "Include accepted group and membership",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "SH-09",
+      "area": "SH",
+      "feature": "Dashboard pending request for Priya",
+      "expectedBehavior": "Includes group name, destination, and `PENDING` status",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "SH-10",
+      "area": "SH",
+      "feature": "Dashboard after finalization",
+      "expectedBehavior": "Shows finalized hotel/room and the user's expenditure",
+      "expectedHttpStatus": 200,
+      "status": "NOT_RUN"
+    }
+  ]
+}

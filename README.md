@@ -29,6 +29,24 @@ npm run dev
 
 The seed command needs the supplied JSON data pack at `hackathon-problem-3-group-travel-matcher/data`. That data directory is intentionally excluded from Git. Seeded demo accounts use the password `Password@123`; their email is the lowercase traveller ID followed by `@seed.local` (for example, `t-001@seed.local`).
 
+## Automated tests
+
+Unit tests run without PostgreSQL. API integration tests send HTTP requests to Express and verify the seeded JSON-backed accounts, destinations, group matching, requests, hotel recommendations, and stay finalization against PostgreSQL. They are guarded to run only against a database named exactly `BookingHoldings_test`.
+
+Create that separate database in PostgreSQL, then from `backend/`:
+
+```powershell
+Copy-Item .env.test.example .env.test
+# Edit .env.test with your local PostgreSQL credentials.
+$env:DOTENV_CONFIG_PATH = ".env.test"
+npm run db:schema
+npm run db:seed
+npm run test:unit
+npm run test:integration
+```
+
+Run both test suites with `npm test`. Without `backend/.env.test`, the integration suite is skipped. Failed API cases print the test name and assertion/error in the terminal. Keep `.env.test` local; it is Git-ignored.
+
 ## Architecture
 
 - **Frontend:** Plain HTML, CSS, and browser JavaScript, served by Express. `frontend/public` contains the app shell and public images; `frontend/src` is organized into API client, assets, components, context, hooks, pages, utilities, and startup code.

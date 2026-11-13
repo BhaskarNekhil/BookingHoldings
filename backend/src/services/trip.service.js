@@ -80,4 +80,18 @@ async function createTrip(userId, input) {
     client.release();
   }
 }
-module.exports = { createTrip, ensureNoOppositeRoleOverlap };
+async function deleteSeekerTrip(tripId, userId) {
+  const result = await pool.query(
+    `DELETE FROM trips
+     WHERE id=$1 AND user_id=$2 AND role='seeker'
+     RETURNING id`,
+    [tripId, userId],
+  );
+  if (!result.rowCount) {
+    const error = new Error("Seeker trip not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return { message: "Seeker trip deleted", tripId: result.rows[0].id };
+}
+module.exports = { createTrip, deleteSeekerTrip, ensureNoOppositeRoleOverlap };

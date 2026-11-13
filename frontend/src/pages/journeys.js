@@ -38,7 +38,7 @@ function renderDashboard() {
     : '<div class="empty">No created groups yet. Create one from Explore trips.</div>';
   const soughtHtml = `<div class="panel"><h3>Your group requests</h3><p class="sub">Trip dates and the response to each request.</p>${dashboard.requests.length ? dashboard.requests.map((r) => `<div class="request"><span><strong>${esc(r.name)}</strong><button type="button" class="ghost" data-profile="${esc(r.owner_id)}">Creator profile</button><small>${esc(r.destination)} | Group trip: ${interval(r.check_in, r.check_out)}${r.recommended_hotel_name ? ` | Creator recommends: ${esc(r.recommended_hotel_name)} · ${esc(r.recommended_room_name)}` : ""}${r.expenditure_inr != null ? ` | Your share: ${money(r.expenditure_inr)}` : ""}</small></span><div>${statusBadge(r.status)}${r.status === "APPROVED" ? `<button data-hotels="${esc(r.group_id)}">${r.expenditure_inr != null ? "View finalized stay" : "Compare stays"}</button>` : ""}${["PENDING", "APPROVED"].includes(r.status) ? `<button class="ghost" data-leave-group="${esc(r.group_id)}">Remove</button>` : ""}</div></div>`).join("") : '<div class="empty">No requests sent yet.</div>'}</div>
     ${joined.length ? `<div class="panel"><h3>Accepted groups</h3>${joined.map((g) => `<div class="request"><span>${esc(g.name)}<button type="button" class="ghost" data-profile="${esc(g.owner_id)}">Creator profile</button><small>${esc(g.destination)} | ${interval(g.check_in, g.check_out)}${g.my_expenditure_inr != null ? ` | Your share: ${money(g.my_expenditure_inr)}` : ""}</small></span><div>${statusBadge(g.finalization_status === "finalized" ? "FINALIZED" : "APPROVED")}<button data-hotels="${esc(g.id)}">${g.finalization_status === "finalized" ? "View finalized stay" : "Compare stays"}</button><button class="ghost" data-leave-group="${esc(g.id)}">Leave group</button></div></div>`).join("")}</div>` : ""}
-    <div class="panel"><h3>Your trip intervals</h3><p class="sub">Your saved seeker dates may differ from the group's dates above.</p>${dashboard.trips.length ? dashboard.trips.map((t) => `<div class="request"><span>${esc(t.destination)}<small>${interval(t.check_in, t.check_out)} | ${money(t.budget_inr)}</small></span><button data-match="${t.id}">See matches</button></div>`).join("") : '<p class="sub">No saved seeker trips yet.</p>'}</div>`;
+    <div class="panel"><h3>Your trip intervals</h3><p class="sub">Your saved seeker dates may differ from the group's dates above.</p>${dashboard.trips.length ? dashboard.trips.map((t) => `<div class="request"><span>${esc(t.destination)}<small>${interval(t.check_in, t.check_out)} | ${money(t.budget_inr)}</small></span><div><button data-match="${t.id}">See matches</button><button type="button" class="ghost" data-delete-trip="${t.id}" aria-label="Delete ${esc(t.destination)} trip">Delete</button></div></div>`).join("") : '<p class="sub">No saved seeker trips yet.</p>'}</div>`;
   $("#content").innerHTML =
     `<div class="section-head"><h2>Your journeys</h2><button id="refresh" class="ghost">Refresh</button></div><div class="tabs" role="group" aria-label="Journey type"><button id="created-tab" aria-pressed="${journeyTab === "created"}" class="${journeyTab === "created" ? "active" : ""}">Created</button><button id="seeked-tab" aria-pressed="${journeyTab === "seeked"}" class="${journeyTab === "seeked" ? "active" : ""}">Seeked</button></div>${journeyTab === "created" ? createdHtml : soughtHtml}<div id="results"></div>`;
   $("#created-tab").onclick = () => {
@@ -55,6 +55,17 @@ function renderDashboard() {
     .forEach(
       (b) => (b.onclick = () => busy(b, () => showMatches(b.dataset.match))),
     );
+  document.querySelectorAll("[data-delete-trip]").forEach(
+    (b) =>
+      (b.onclick = () =>
+        busy(b, async () => {
+          if (!confirm("Delete this seeker trip and its saved interval?")) return;
+          await api("/trips/" + encodeURIComponent(b.dataset.deleteTrip), "DELETE");
+          dashboard = await api("/dashboard");
+          renderDashboard();
+          notice("Seeker trip deleted.");
+        })),
+  );
   document
     .querySelectorAll("[data-hotels]")
     .forEach(

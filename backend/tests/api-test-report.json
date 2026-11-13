@@ -1,0 +1,410 @@
+{
+  "total": 80,
+  "passed": 0,
+  "failed": 0,
+  "blocked": 80,
+  "database": "BookingHoldings_test",
+  "finishedAt": "2026-11-13T16:12:59.368Z",
+  "results": [
+    {
+      "id": "AU-01",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "AU-02",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "AU-03",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "AU-04",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "AU-05",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "AU-06",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "AU-07",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "AU-08",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "AU-09",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "AU-10",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "TR-01",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "TR-02",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "TR-03",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "TR-04",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "TR-05",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "TR-06",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "TR-07",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "TR-08",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "TR-09",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "TR-10",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "GR-01",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "GR-02",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "GR-03",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "GR-04",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "GR-05",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "GR-06",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "GR-07",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "GR-08",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "GR-09",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "GR-10",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "RQ-01",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "RQ-02",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "RQ-03",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "RQ-04",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "RQ-05",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "RQ-06",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "RQ-07",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "RQ-08",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "RQ-09",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "RQ-10",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "MA-01",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "MA-02",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "MA-03",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "MA-04",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "MA-05",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "MA-06",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "MA-07",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "MA-08",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "MA-09",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "MA-10",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "LO-01",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "LO-02",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "LO-03",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "LO-04",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "LO-05",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "LO-06",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "LO-07",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "LO-08",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "LO-09",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "LO-10",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "HT-01",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "HT-02",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "HT-03",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "HT-04",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "HT-05",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "HT-06",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "HT-07",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "HT-08",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "HT-09",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "HT-10",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "SH-01",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "SH-02",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "SH-03",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "SH-04",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "SH-05",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "SH-06",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "SH-07",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "SH-08",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "SH-09",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    },
+    {
+      "id": "SH-10",
+      "outcome": "BLOCKED",
+      "reason": "JSON case has no execution request/assertions yet"
+    }
+  ]
+}

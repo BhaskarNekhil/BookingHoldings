@@ -39,4 +39,15 @@ async function createTrip(req, res, next) {
     next(e);
   }
 }
-module.exports = { createTrip };
+async function deleteSeekerTrip(req, res, next) {
+  try {
+    const tripId = Number(req.params.tripId);
+    if (!Number.isInteger(tripId) || tripId < 1)
+      return res.status(400).json({ message: "A valid trip ID is required" });
+    const result = await service.deleteSeekerTrip(tripId, req.user.userId);
+    return res.json(result);
+  } catch (e) {
+    next(e);
+  }
+}
+module.exports = { createTrip, deleteSeekerTrip };
