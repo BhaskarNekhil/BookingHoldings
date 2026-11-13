@@ -1,9 +1,11 @@
 const express = require("express");
-const pool = require("../config/db");
 const { requireAuth } = require("../middleware/auth.middleware");
+const controller = require('../controllers/hotel.controller');
 
 const router = express.Router();
 
+router.get("/groups/:groupId/hotels", requireAuth, controller.list);
+/*
 router.get("/groups/:groupId/hotels", requireAuth, async (req, res, next) => {
   try {
     const { groupId } = req.params;
@@ -95,5 +97,6 @@ router.get("/groups/:groupId/hotels", requireAuth, async (req, res, next) => {
     next(error);
   }
 });
+*/
 
 module.exports = router;

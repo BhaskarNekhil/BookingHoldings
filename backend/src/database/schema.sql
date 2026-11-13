@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS interests (
 );
 
 CREATE TABLE IF NOT EXISTS user_interests (
-  user_id VARCHAR(255) NOT NULL,
+  user_id VARCHAR(50) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   interest_id VARCHAR(50) NOT NULL REFERENCES interests(id) ON DELETE CASCADE,
   PRIMARY KEY (user_id, interest_id)
 );
@@ -190,7 +190,7 @@ CREATE TABLE IF NOT EXISTS bookings (
 
 CREATE TABLE IF NOT EXISTS idempotency_keys (
   id BIGSERIAL PRIMARY KEY,
-  user_id VARCHAR(50) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  user_id VARCHAR(255) NOT NULL,
   idempotency_key VARCHAR(200) NOT NULL,
   request_hash CHAR(64) NOT NULL,
   status VARCHAR(20) NOT NULL DEFAULT 'PROCESSING'
