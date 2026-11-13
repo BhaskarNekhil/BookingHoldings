@@ -8,10 +8,13 @@ const tripRoutes = require("./routes/trip.routes");
 const groupRoutes = require("./routes/group.routes");
 const matchRoutes = require("./routes/match.routes");
 const hotelRoutes = require("./routes/hotel.routes");
+const requestLogger = require('./middleware/request-logger.middleware');
+const errorHandler = require('./middleware/error.middleware');
 
 const app = express();
 
 app.use(express.json());
+app.use(requestLogger);
 app.use(express.static(path.join(__dirname, '../../frontend/public')));
 
 app.get('/api/profiles/:userId', requireAuth, async (req, res, next) => {
@@ -63,9 +66,6 @@ app.use("/api/groups", groupRoutes);
 app.use("/api/matches", matchRoutes);
 app.use("/api", hotelRoutes);
 
-app.use((error, req, res, next) => {
-  console.error(error);
-  res.status(500).json({ message: "Internal server error" });
-});
+app.use(errorHandler);
 
 module.exports = app;

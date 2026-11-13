@@ -3,10 +3,11 @@ const bcrypt = require("bcrypt");
 const express = require("express");
 const pool = require("../config/db");
 const { createToken } = require("../utils/auth");
+const idempotency = require('../middleware/idempotency.middleware');
 
 const router = express.Router();
 
-router.post("/signup", async (req, res, next) => {
+router.post("/signup", idempotency, async (req, res, next) => {
   try {
     const {
       email,

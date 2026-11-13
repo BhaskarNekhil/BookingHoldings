@@ -2,10 +2,11 @@ const crypto = require("node:crypto");
 const express = require("express");
 const pool = require("../config/db");
 const { requireAuth } = require("../middleware/auth.middleware");
+const idempotency = require('../middleware/idempotency.middleware');
 
 const router = express.Router();
 
-router.post("/", requireAuth, async (req, res, next) => {
+router.post("/", requireAuth, idempotency, async (req, res, next) => {
   const client = await pool.connect();
 
   try {
@@ -91,11 +92,13 @@ router.post("/", requireAuth, async (req, res, next) => {
   }
 });
 
-router.post("/:groupId/requests", requireAuth, async (req, res, next) => {
+router.post("/:groupId/requests", requireAuth, idempotency, async (req, res, next) => {
+  const client = await pool.connect();
   try {
     const { groupId } = req.params;
 
-    const groupResult = await pool.query(
+    await client.query('BEGIN');
+    const groupResult = await client.query(
       `
       SELECT g.id, g.owner_id, g.status, g.max_size,
              COUNT(gm.user_id)::int AS member_count
@@ -103,6 +106,7 @@ router.post("/:groupId/requests", requireAuth, async (req, res, next) => {
       LEFT JOIN group_members gm ON gm.group_id = g.id
       WHERE g.id = $1
       GROUP BY g.id
+      FOR UPDATE OF g
       `,
       [groupId]
     );
@@ -110,18 +114,21 @@ router.post("/:groupId/requests", requireAuth, async (req, res, next) => {
     const group = groupResult.rows[0];
 
     if (!group) {
+      await client.query('ROLLBACK');
       return res.status(404).json({ message: "Group not found" });
     }
 
     if (group.owner_id === req.user.userId) {
+      await client.query('ROLLBACK');
       return res.status(400).json({ message: "Owner cannot join own group" });
     }
 
     if (group.status !== "OPEN" || group.member_count >= group.max_size) {
+      await client.query('ROLLBACK');
       return res.status(409).json({ message: "Group has no available place" });
     }
 
-    const result = await pool.query(
+    const result = await client.query(
       `
       INSERT INTO join_requests (group_id, seeker_id)
       VALUES ($1, $2)
@@ -130,12 +137,16 @@ router.post("/:groupId/requests", requireAuth, async (req, res, next) => {
       [groupId, req.user.userId]
     );
 
+    await client.query('COMMIT');
     res.status(201).json({ request: result.rows[0] });
   } catch (error) {
+    await client.query('ROLLBACK');
     if (error.code === "23505") {
       return res.status(409).json({ message: "Request already exists" });
     }
     next(error);
+  } finally {
+    client.release();
   }
 });
 
@@ -173,7 +184,7 @@ router.get("/:groupId/requests", requireAuth, async (req, res, next) => {
   }
 });
 
-router.patch("/requests/:requestId", requireAuth, async (req, res, next) => {
+router.patch("/requests/:requestId", requireAuth, idempotency, async (req, res, next) => {
   const client = await pool.connect();
 
   try {
@@ -192,7 +203,7 @@ router.patch("/requests/:requestId", requireAuth, async (req, res, next) => {
       FROM join_requests jr
       JOIN groups g ON g.id = jr.group_id
       WHERE jr.id = $1
-      FOR UPDATE OF jr, g
+      FOR UPDATE OF g, jr
       `,
       [req.params.requestId]
     );
@@ -213,6 +224,9 @@ router.patch("/requests/:requestId", requireAuth, async (req, res, next) => {
       await client.query("ROLLBACK");
       return res.status(409).json({ message: "Request was already reviewed" });
     }
+
+    // Serialize approvals for a group, so simultaneous approvals cannot exceed capacity.
+    await client.query('SELECT id FROM groups WHERE id=$1 FOR UPDATE', [request.group_id]);
 
     if (status === "APPROVED") {
       if (request.group_status !== 'OPEN') {

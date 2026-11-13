@@ -1,10 +1,11 @@
 const express = require("express");
 const pool = require("../config/db");
 const { requireAuth } = require("../middleware/auth.middleware");
+const idempotency = require('../middleware/idempotency.middleware');
 
 const router = express.Router();
 
-router.post("/", requireAuth, async (req, res, next) => {
+router.post("/", requireAuth, idempotency, async (req, res, next) => {
   const client = await pool.connect();
 
   try {
