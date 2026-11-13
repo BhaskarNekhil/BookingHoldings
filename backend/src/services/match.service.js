@@ -20,10 +20,10 @@ async function getOpenGroups() {
     u.name AS owner_name,u.gender AS owner_gender,
     COALESCE(t.gender_preference,u.gender_preference,'ANY') AS owner_gender_preference,
     COUNT(DISTINCT gm.user_id)::int AS member_count,
-    COALESCE(array_agg(DISTINCT ti.interest_id) FILTER (WHERE ti.interest_id IS NOT NULL), '{}') AS interests
+    COALESCE(array_agg(DISTINCT oi.interest_id) FILTER (WHERE oi.interest_id IS NOT NULL), '{}') AS interests
     FROM groups g JOIN trips t ON t.id=g.trip_id JOIN users u ON u.id=g.owner_id
     LEFT JOIN group_members gm ON gm.group_id=g.id
-    LEFT JOIN trip_interests ti ON ti.trip_id=t.id
+    LEFT JOIN user_interests oi ON oi.user_id=u.id
     WHERE g.status='OPEN' AND t.status='active'
     GROUP BY g.id,t.id,u.id`);
   return result.rows;
