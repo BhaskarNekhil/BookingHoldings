@@ -38,6 +38,9 @@ test("requires same exact destination city", () => {
     false,
   );
 });
+test("accepts identical destination even when other fields differ", () => {
+  assert.equal(evaluateMatch(creatorGroup, seeker).checks.sameDestination, true);
+});
 test("requires at least two overlapping nights", () => {
   assert.equal(
     evaluateMatch(
@@ -46,6 +49,16 @@ test("requires at least two overlapping nights", () => {
     ).checks.dateOverlap,
     false,
   );
+});
+test("accepts exactly two shared nights", () => {
+  const twoNightGroup = { ...creatorGroup, check_in: "2027-04-14", check_out: "2027-04-17" };
+  const result = evaluateMatch(twoNightGroup, seeker);
+  assert.equal(result.checks.dateOverlap, true);
+  assert.equal(result.overlapping_nights, 2);
+});
+test("treats check-out day as excluded from overlapping nights", () => {
+  const adjacent = { ...creatorGroup, check_in: "2027-04-16", check_out: "2027-04-18" };
+  assert.equal(evaluateMatch(adjacent, seeker).overlapping_nights, 0);
 });
 test("accepts 40 percent budget boundary and rejects above it", () => {
   const budgetSeeker = { ...seeker, budget_inr: 60000 };
@@ -60,12 +73,24 @@ test("accepts 40 percent budget boundary and rejects above it", () => {
     false,
   );
 });
+test("budget rule uses the lower budget as its 40 percent base", () => {
+  const result = evaluateMatch(
+    { ...creatorGroup, budget_inr: 60000 },
+    { ...seeker, budget_inr: 85000 },
+  );
+  assert.equal(result.checks.budgetCompatible, false);
+});
 test("requires two interests shared with creator trip", () => {
   assert.equal(
     evaluateMatch({ ...creatorGroup, interests: ["TEMPLES"] }, seeker).checks
       .sharedInterests,
     false,
   );
+});
+test("matches when exactly two interests are shared", () => {
+  const result = evaluateMatch(creatorGroup, seeker);
+  assert.equal(result.checks.sharedInterests, true);
+  assert.equal(result.shared_interests.length, 2);
 });
 test("checks gender preferences mutually", () => {
   assert.equal(
@@ -79,10 +104,34 @@ test("checks gender preferences mutually", () => {
     true,
   );
 });
+test("same gender is allowed when both choose same-gender preference", () => {
+  assert.equal(evaluateMatch(creatorGroup, seeker).checks.mutualGenderPreference, true);
+});
+test("ANY preference allows either gender", () => {
+  const maleSeeker = { ...seeker, gender: "MALE", gender_preference: "ANY" };
+  const anyGenderGroup = { ...creatorGroup, owner_gender_preference: "ANY" };
+  assert.equal(evaluateMatch(anyGenderGroup, maleSeeker).checks.mutualGenderPreference, true);
+});
+test("rejects gender mismatch if either side restricts companions", () => {
+  const maleSeeker = { ...seeker, gender: "MALE", gender_preference: "ANY" };
+  assert.equal(evaluateMatch(creatorGroup, maleSeeker).checks.mutualGenderPreference, false);
+});
 test("requires one available group place", () => {
   assert.equal(
     evaluateMatch({ ...creatorGroup, member_count: 3, max_size: 3 }, seeker)
       .checks.groupHasCapacity,
+    false,
+  );
+});
+test("allows seeker when one remaining spot reaches max group size", () => {
+  assert.equal(
+    evaluateMatch({ ...creatorGroup, member_count: 2, max_size: 3 }, seeker).checks.groupHasCapacity,
+    true,
+  );
+});
+test("uses total group size including the owner", () => {
+  assert.equal(
+    evaluateMatch({ ...creatorGroup, member_count: 3, max_size: 3 }, seeker).checks.groupHasCapacity,
     false,
   );
 });

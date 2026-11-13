@@ -10,3 +10,5 @@
 *.log
 **/dist/
 **/coverage/
+backend/logs/*.log
+!backend/logs/.gitkeep

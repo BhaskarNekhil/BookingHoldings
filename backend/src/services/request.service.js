@@ -4,7 +4,7 @@ async function create(groupId, userId) {
   try {
     await c.query("BEGIN");
     const r = await c.query(
-      `SELECT g.id,g.owner_id,g.status,g.max_size,COUNT(gm.user_id)::int AS member_count FROM groups g LEFT JOIN group_members gm ON gm.group_id=g.id WHERE g.id=$1 GROUP BY g.id FOR UPDATE OF g`,
+      `SELECT id,owner_id,status,max_size FROM groups WHERE id=$1 FOR UPDATE`,
       [groupId],
     );
     const g = r.rows[0];
@@ -18,6 +18,11 @@ async function create(groupId, userId) {
       e.statusCode = 400;
       throw e;
     }
+    const count = await c.query(
+      "SELECT COUNT(*)::int AS member_count FROM group_members WHERE group_id=$1",
+      [groupId],
+    );
+    g.member_count = count.rows[0].member_count;
     if (g.status !== "OPEN" || g.member_count >= g.max_size) {
       const e = new Error("Group has no available place");
       e.statusCode = 409;

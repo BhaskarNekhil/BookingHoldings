@@ -1,4 +1,20 @@
 const service = require("../services/group.service");
+async function remove(req,res,next){try{res.json(await service.remove(req.params.groupId,req.user.userId));}catch(e){next(e);}}
+async function leave(req,res,next){try{res.json(await service.leave(req.params.groupId,req.user.userId));}catch(e){next(e);}}
+async function finalize(req,res,next){
+  try {
+    const {roomId}=req.body;
+    if(!roomId)return res.status(400).json({message:"roomId is required"});
+    res.json(await service.finalizeStay(req.params.groupId,req.user.userId,roomId));
+  } catch(e) { next(e); }
+}
+async function recommend(req,res,next){
+  try {
+    const {roomId}=req.body;
+    if(!roomId)return res.status(400).json({message:"roomId is required"});
+    res.json(await service.setRecommendation(req.params.groupId,req.user.userId,roomId));
+  } catch(e) { next(e); }
+}
 async function create(req, res, next) {
   try {
     const { name, destination, checkIn, checkOut, maxSize, budgetInr } =
@@ -19,7 +35,10 @@ async function create(req, res, next) {
         });
     res.status(201).json(await service.create(req.user.userId, req.body));
   } catch (e) {
-    if (e.code === "P0001") e.statusCode = 409;
+    if (e.code === "P0001") {
+      e.statusCode = 409;
+      e.message = "You already have a trip in this time interval. Choose dates outside your existing trip to create a group.";
+    }
     next(e);
   }
 }
@@ -65,4 +84,4 @@ async function review(req, res, next) {
     next(e);
   }
 }
-module.exports = { create, requestJoin, listRequests, review };
+module.exports = { create, remove, leave, finalize, recommend, requestJoin, listRequests, review };

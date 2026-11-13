@@ -25,6 +25,10 @@ async function createTrip(req, res, next) {
     });
     return res.status(201).json({ trip });
   } catch (e) {
+    if (e.code === "P0001") {
+      e.statusCode = 409;
+      e.message = "You already have a trip in this time interval. Choose dates outside your existing trip to continue.";
+    }
     next(e);
   }
 }

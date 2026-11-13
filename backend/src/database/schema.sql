@@ -188,6 +188,49 @@ CREATE TABLE IF NOT EXISTS bookings (
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Records the group's agreed stay choice; this does not create a hotel reservation.
+CREATE TABLE IF NOT EXISTS finalized_stays (
+  id BIGSERIAL PRIMARY KEY,
+  group_id VARCHAR(50) UNIQUE NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
+  hotel_id VARCHAR(50) NOT NULL REFERENCES hotels(id),
+  room_id VARCHAR(50) NOT NULL REFERENCES rooms(id),
+  check_in DATE NOT NULL,
+  check_out DATE NOT NULL,
+  room_count INT NOT NULL,
+  total_cost_inr INTEGER NOT NULL,
+  cost_per_member_inr INTEGER NOT NULL,
+  finalized_by VARCHAR(50) NOT NULL REFERENCES users(id),
+  finalized_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CHECK (check_out > check_in)
+);
+
+CREATE TABLE IF NOT EXISTS group_finalization_status (
+  group_id VARCHAR(50) PRIMARY KEY REFERENCES groups(id) ON DELETE CASCADE,
+  status VARCHAR(20) NOT NULL DEFAULT 'unfinalized'
+    CHECK (status IN ('finalized', 'unfinalized')),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO group_finalization_status(group_id,status)
+SELECT g.id,CASE WHEN fs.group_id IS NULL THEN 'unfinalized' ELSE 'finalized' END
+FROM groups g LEFT JOIN finalized_stays fs ON fs.group_id=g.id
+ON CONFLICT (group_id) DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS group_member_expenses (
+  group_id VARCHAR(50) NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
+  user_id VARCHAR(50) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  expenditure_inr INTEGER NOT NULL CHECK (expenditure_inr >= 0),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (group_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS group_room_recommendations (
+  group_id VARCHAR(50) PRIMARY KEY REFERENCES groups(id) ON DELETE CASCADE,
+  room_id VARCHAR(50) NOT NULL REFERENCES rooms(id),
+  recommended_by VARCHAR(50) NOT NULL REFERENCES users(id),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS idempotency_keys (
   id BIGSERIAL PRIMARY KEY,
   user_id VARCHAR(255) NOT NULL,

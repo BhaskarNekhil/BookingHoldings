@@ -37,15 +37,26 @@ app.get('/api/dashboard', requireAuth, async (req, res, next) => {
   try {
     const id = req.user.userId;
     const groups = await pool.query(`SELECT g.*, t.destination, t.check_in, t.check_out,
-      t.budget_inr, t.itinerary, (SELECT COUNT(*)::int FROM group_members WHERE group_id=g.id) AS member_count
+      t.budget_inr, t.itinerary, (SELECT COUNT(*)::int FROM group_members WHERE group_id=g.id) AS member_count,
+      (SELECT expenditure_inr FROM group_member_expenses WHERE group_id=g.id AND user_id=$1) AS my_expenditure_inr,
+      fs.cost_per_member_inr AS finalized_cost_per_member_inr, h.name AS finalized_hotel_name, r.name AS finalized_room_name,
+      COALESCE(gfs.status,'unfinalized') AS finalization_status
       FROM groups g JOIN trips t ON t.id=g.trip_id
+      LEFT JOIN group_finalization_status gfs ON gfs.group_id=g.id
+      LEFT JOIN finalized_stays fs ON fs.group_id=g.id
+      LEFT JOIN hotels h ON h.id=fs.hotel_id LEFT JOIN rooms r ON r.id=fs.room_id
       WHERE EXISTS (SELECT 1 FROM group_members m WHERE m.group_id=g.id AND m.user_id=$1)`, [id]);
     const trips = await pool.query("SELECT * FROM trips WHERE user_id=$1 AND role='seeker' ORDER BY id DESC", [id]);
     const requests = await pool.query(`SELECT r.*, g.name, g.owner_id, t.destination,
+      e.expenditure_inr,
+      rec_h.name AS recommended_hotel_name, rec_r.name AS recommended_room_name,
       to_char(t.check_in, 'YYYY-MM-DD') AS check_in,
       to_char(t.check_out, 'YYYY-MM-DD') AS check_out
       FROM join_requests r JOIN groups g ON g.id=r.group_id
-      JOIN trips t ON t.id=g.trip_id WHERE r.seeker_id=$1 ORDER BY r.id DESC`, [id]);
+      JOIN trips t ON t.id=g.trip_id LEFT JOIN group_member_expenses e ON e.group_id=g.id AND e.user_id=r.seeker_id
+      LEFT JOIN group_room_recommendations rec ON rec.group_id=g.id
+      LEFT JOIN rooms rec_r ON rec_r.id=rec.room_id LEFT JOIN hotels rec_h ON rec_h.id=rec_r.hotel_id
+      WHERE r.seeker_id=$1 ORDER BY r.id DESC`, [id]);
     const incoming = await pool.query(`SELECT r.id, r.group_id, r.status, r.seeker_id,
       u.name, u.home_city FROM join_requests r
       JOIN groups g ON g.id=r.group_id JOIN users u ON u.id=r.seeker_id

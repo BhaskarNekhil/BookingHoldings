@@ -10,6 +10,10 @@ async function list(req, res, next) {
       (Date.parse(c.check_out) - Date.parse(c.check_in)) / 86400000,
     );
     const budget = await service.loadBudget(c.id, c);
+    const finalizedStay = await service.loadFinalizedStay(c.id);
+    const finalizationStatus = await service.loadFinalizationStatus(c.id);
+    const memberExpenses = await service.loadMemberExpenses(c.id);
+    const recommendation = await service.loadRecommendation(c.id);
     const hotels = (await service.loadRooms(c, nights))
       .map((o) => {
         const rooms = Math.ceil(c.member_count / o.max_adults);
@@ -30,6 +34,12 @@ async function list(req, res, next) {
       check_out: c.check_out,
       member_count: c.member_count,
       budget_limit_inr: budget,
+      finalized_stay: finalizedStay,
+      finalization_status: finalizationStatus,
+      member_expenses: memberExpenses,
+      recommended_room: recommendation,
+      can_finalize: c.owner_id === req.user.userId && finalizationStatus !== 'finalized',
+      can_recommend: c.owner_id === req.user.userId && finalizationStatus !== 'finalized',
       hotels,
     });
   } catch (e) {
